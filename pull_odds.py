@@ -5,6 +5,12 @@ v0.8: price math EXTRACTED to pricing.py (shared module, Session S 2026-07-23).
 am_to_prob / prob_to_am / novig_two_way / is_corrupt_am / clean_prices / med_am
 now import from pricing; behavior byte-identical. pricing.py ships alongside
 this file in the repo and is a REQUIRED sibling.
+v0.8 also: TOTALS-CLV BLIND-SPOT FIX. Closers now request alternate_totals /
+alternate_team_totals alongside the main market, so a total whose line moved
+grades prob-space CLV at the ORIGINAL bet point instead of returning n/q.
+Cost: +1 credit per totals/TT-bet event at close. (Found 7/22: four of six
+totals moved and scored nothing; the 'totals CLV negative' read measured
+only unmoved lines.)
 v0.6: corrupt-quote filter -- American odds in (-100,+100) are impossible;
 such feed garbage is dropped before all median/no-vig math with a
 [corrupt-quote] re-pull flag. Fully-corrupt sides: consensus row skipped,
@@ -393,9 +399,20 @@ def run_morning(date_str=None):
 def close_markets_for(mkey):
     """v0.7: grade batter_total_bases CLV against the alternate ladder so the exact
     bet point (e.g. O1.5) is present at close even when the book main line is 0.5.
-    Alt is a superset and close matching is exact-point, so no modal risk here."""
+    Alt is a superset and close matching is exact-point, so no modal risk here.
+    v0.8 (totals-CLV blind-spot fix, Session S 2026-07-23): same treatment for
+    game totals and team totals. A total whose LINE MOVED (bet O8.5, closed 9.5)
+    previously came back 'no closing quote at bet point' and was silently dropped
+    from the CLV sample -- which is exactly the population of totals that moved,
+    i.e. the ones with the most CLV signal. Now the closing snapshot requests the
+    main market PLUS its alternate ladder so the original bet point is priced at
+    close and flows through the normal prob-space CLV math."""
     if mkey == "batter_total_bases":
         return "batter_total_bases_alternate"
+    if mkey == "totals":
+        return "totals,alternate_totals"
+    if mkey == "team_totals":
+        return "team_totals,alternate_team_totals"
     return mkey
 
 def run_closers(bets_path, snapshot_lead_min=5):
@@ -447,6 +464,10 @@ def close_for_bet(event_data, bet):
     accept = {mkey}
     if mkey == "batter_total_bases":
         accept.add("batter_total_bases_alternate")  # v0.7: alt ladder carries the O1.5 close
+    elif mkey == "totals":
+        accept.add("alternate_totals")        # v0.8: moved-line totals close at the bet point
+    elif mkey == "team_totals":
+        accept.add("alternate_team_totals")   # v0.8: same fix for TT bets
     for bk in event_data.get("bookmakers", []):
         for mk in bk.get("markets", []):
             if mk.get("key") not in accept:
@@ -617,6 +638,20 @@ def run_selftest():
     assert r25["novig_over_prob"] == "" and r25["med_under"] == "" and r25["best_over"] == 300
     assert close_markets_for("batter_total_bases") == "batter_total_bases_alternate"
     assert close_markets_for("pitcher_strikeouts") == "pitcher_strikeouts"
+    # v0.8: moved-line total must grade off the alternate ladder, not come back n/q
+    ev = {"bookmakers": [{"markets": [
+        {"key": "totals", "outcomes": [
+            {"name": "Over", "point": 9.5, "price": -110},
+            {"name": "Under", "point": 9.5, "price": -110}]},
+        {"key": "alternate_totals", "outcomes": [
+            {"name": "Over", "point": 8.5, "price": -145},
+            {"name": "Under", "point": 8.5, "price": 125}]},
+    ]}]}
+    tb = {"market": "totals", "side": "Over", "point": "8.5", "my_odds": "-110",
+          "player": "", "event_id": "x", "commence_time": "2026-07-22T23:00:00Z"}
+    r = close_for_bet(ev, tb)
+    assert r["clv_note"] == "" and r["close_med_side"] == -145, r
+    assert float(r["clv_prob_pts"]) > 0, r  # O8.5 at -110 vs -145 close = positive CLV
     print("[selftest] all offline checks passed")
 
 if __name__ == "__main__":
