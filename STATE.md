@@ -75,7 +75,11 @@ cuts happen on scoring evidence (sec 7), never by fiat.
   proj_ER = shrunk_skill/27 * outgs_adj * opp_adj * recency_adj; opp term =
   lineup-weighted SEASON xwOBA. K/BB/ER opp terms = PA-weighted aggregate of
   the NINE CARDED HITTERS, never team-agg. TB does not move with lineups.
-  TT park term .1075 live at every build. Leakage terms RETIRED (7/22).
+  TT park term .1075 live at every build. TT opp_offense = z[PA-weighted
+  carded-lineup OPS vs SP hand] — nine carded hitters per shared machinery
+  (statsapi vl/vr splits, EB-shrunk k=450 toward overall + league gap); no
+  lineup → team OPS YTD fallback, flagged team-agg. RATIFIED by Grant S 8/10,
+  closing B 8/4 reconstruction interpretation (2). Leakage terms RETIRED (7/22).
 - **Model freeze: bug fixes only; no single-stretch reweights.** PA >= 100 for
   TB/HRR board display; projections stay full-population.
 - Triple Locks: ML+totals only, all three legs same side — Model A >= 65%;
