@@ -191,7 +191,12 @@ Beautiful tables with icons and narratives.
 6. TTproj: recast as a candidate second TT model — commit its projections
    alongside TT 2.0 and let the scoring loop decide (design doc Drive
    1nzDj7CcruZIvzB1qXQs3UbRxIqPDrkSM).
-7. Triple Lock architecture review (six straight no-fire slates; A/B legs not
+7. RULED, BUILD NEXT S (Grant 8/10, S #1 chat): daily output adds a SECOND
+   TB board — top 20 ranked by z (composite model score), printed alongside
+   the existing EV-per-$100 board, which stays as-is. Same PA >= 100 display
+   gate; carry prices/edge columns on both. Not a ranking-basis change —
+   supplements item 3, does not settle it.
+8. Triple Lock architecture review (six straight no-fire slates; A/B legs not
    independent) — whenever Grant calls it.
 8. Demolition (trails the proven build): migrate the four spec sources into the
    repo; Drive teardown + Grant's delete list; memory primer rewrite; fold the
