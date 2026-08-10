@@ -198,7 +198,7 @@ Beautiful tables with icons and narratives.
    supplements item 3, does not settle it.
 8. Triple Lock architecture review (six straight no-fire slates; A/B legs not
    independent) — whenever Grant calls it.
-8. Demolition (trails the proven build): migrate the four spec sources into the
+9. Demolition (trails the proven build): migrate the four spec sources into the
    repo; Drive teardown + Grant's delete list; memory primer rewrite; fold the
    live pens.
 
