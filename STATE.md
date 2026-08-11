@@ -155,6 +155,12 @@ Beautiful tables with icons and narratives.
 ## 7. THE SCORING LOOP (score_day.py — the feedback mechanism)
 - **Scope ruled by Grant 8/9: THE WHOLE BOARD.** Every projection row is scored,
   not a card-qualified subset.
+- candidates/YYYY-MM-DD.csv committed at each build (Grant ruling 8/11): the FULL
+  modeled pools for TB (all bats priced at 1.5 actionable) and HRR (all lined
+  bats) — proj, z, price, rank, PA, on_board tag. OUTSIDE projections/ so
+  summary.csv (the board's record) is never polluted; graded ad hoc for
+  discrimination studies (board vs field, deciles). K/BB/ER/TT/ML/TOTAL have no
+  discarded population — the board already covers every modeled entity.
 - projections/YYYY-MM-DD.csv committed at each build (schema in score_day.py
   docstring: date,game_pk,away,home,market,entity,player_id,line,side,proj,
   price,ts; line stored AS BET — half-run applied upstream). score_day.py pulls
