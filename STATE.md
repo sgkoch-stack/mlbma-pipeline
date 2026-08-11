@@ -101,6 +101,12 @@ never a 6-name cut. TB + HRR top-20, max 6 per game each. K/BB/ER boards side
 by SIGN OF (proj - line) — composite score is strength within a side, never the
 side; always carry the props-page grade column. TB ranking = EV-per-$100 at
 best ACTIONABLE price (edge displayed; EV-vs-edge basis is an open item, sec 9).
+**SECOND TB BOARD (ruled by Grant 8/10, built S 8/10): top 20 by z (composite
+model score), PURE ranking — NO per-game cap; printed directly after the EV
+board, which stays exactly as-is (its max-6-per-game cap unchanged); same
+PA >= 100 display gate; carry price + edge columns on both boards; brief
+overlap/divergence note vs the EV board each day — evidence for the EV-vs-edge
+open item (sec 9), which this supplements but does not settle.**
 Beautiful tables with icons and narratives.
 
 ## 6. STANDING RULINGS (board + data canon that survives)
@@ -191,14 +197,9 @@ Beautiful tables with icons and narratives.
 6. TTproj: recast as a candidate second TT model — commit its projections
    alongside TT 2.0 and let the scoring loop decide (design doc Drive
    1nzDj7CcruZIvzB1qXQs3UbRxIqPDrkSM).
-7. RULED, BUILD NEXT S (Grant 8/10, S #1 chat): daily output adds a SECOND
-   TB board — top 20 ranked by z (composite model score), printed alongside
-   the existing EV-per-$100 board, which stays as-is. Same PA >= 100 display
-   gate; carry prices/edge columns on both. Not a ranking-basis change —
-   supplements item 3, does not settle it.
-8. Triple Lock architecture review (six straight no-fire slates; A/B legs not
+7. Triple Lock architecture review (six straight no-fire slates; A/B legs not
    independent) — whenever Grant calls it.
-9. Demolition (trails the proven build): migrate the four spec sources into the
+8. Demolition (trails the proven build): migrate the four spec sources into the
    repo; Drive teardown + Grant's delete list; memory primer rewrite; fold the
    live pens.
 
