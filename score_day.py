@@ -140,7 +140,7 @@ def fetch_day(date_iso):
                 else:
                     tb = None
                 rec = {"name": name, "team": g[side], "appeared": appeared,
-                       "tb": tb, "hr": bat.get("homeRuns") if bat else None,
+                       "tb": tb, "hrr": (bat.get("hits",0) + bat.get("runs",0) + bat.get("rbi",0)) if bat else None,
                        "k": pit.get("strikeOuts") if pit else None,
                        "bb": pit.get("baseOnBalls") if pit else None,
                        "er": pit.get("earnedRuns") if pit else None}
@@ -188,7 +188,7 @@ def score_row(row, games):
         out["err"] = ("" if actual is None or not row.get("proj")
                       else round(float(actual) - float(row["proj"]), 3))
         out["settle"] = settle
-        out["units"] = (0.0 if settle in ("P", "V")
+        out["units"] = (0.0 if settle in ("P", "V") or row.get("price") in ("", None)
                         else american_units(row["price"], settle == "W"))
         return out
     if g is None or not g["final"]:
@@ -216,7 +216,7 @@ def score_row(row, games):
         rec = g["players"].get(nm)
     if rec is None or not rec["appeared"]:
         return fin(None, "V")   # scratch with markets pulled = VOID
-    key = {"TB": "tb", "HRR": "hr", "K": "k", "BB": "bb", "ER": "er"}[mkt]
+    key = {"TB": "tb", "HRR": "hrr", "K": "k", "BB": "bb", "ER": "er"}[mkt]
     actual = rec[key]
     if actual is None:          # e.g. K market on a guy who only hit
         return fin(None, "V")
@@ -282,13 +282,18 @@ def selftest(date_iso):
          "player_id":"","line":str(pitcher["k"]),"side":"O",
          "proj":str(pitcher["k"]),"price":"-115","ts":""},
         {"date":date_iso,"game_pk":pk,"away":g["away"],"home":g["home"],
+         "market":"HRR","entity":f'{batter["name"]} ({batter["team"]})',
+         "player_id":"","line":str(batter["hrr"]-0.5),"side":"O",
+         "proj":str(batter["hrr"]),"price":"-110","ts":""},
+        {"date":date_iso,"game_pk":pk,"away":g["away"],"home":g["home"],
          "market":"HRR","entity":"Nobody Realman (ZZZ)","player_id":"",
          "line":"0.5","side":"O","proj":"0.4","price":"+300","ts":""},
     ]
     scored = [score_row(r, games) for r in rows]
     # ML on the actual winner = W; TOTAL O at (tot-0.5) = W;
-    # TB U at (tb+0.5) = W; K O at exactly k = P; unknown player = V (scratch)
-    exp = ["W", "W", "W", "P", "V"]
+    # TB U at (tb+0.5) = W; K O at exactly k = P;
+    # HRR O at (h+r+rbi - 0.5) = W (real H+R+RBI, the 8/11 fix); unknown = V
+    exp = ["W", "W", "W", "P", "W", "V"]
     got = [s["settle"] for s in scored]
     ok = got == exp
     for s, e in zip(scored, exp):
