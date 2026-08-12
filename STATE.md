@@ -176,7 +176,15 @@ Beautiful tables with icons and narratives.
   discarded population — the board already covers every modeled entity.
 - projections/YYYY-MM-DD.csv committed at each build (schema in score_day.py
   docstring: date,game_pk,away,home,market,entity,player_id,line,side,proj,
-  price,ts; line stored AS BET — half-run applied upstream). score_day.py pulls
+  price,ts,board,ev; line stored AS BET — half-run applied upstream).
+  **board + ev added 8/12 (Grant ruling): TB rows carry board=EV|Z|BOTH and
+  ev=modelled EV per $100 at the stored price, because proj holds z for BOTH
+  TB boards and the EV board's own ranking basis was otherwise absent from the
+  record. Blank on all non-TB markets. score_day.py passes both through to
+  scoring/. This makes open item 3 (EV-vs-edge basis) measurable from the
+  record. NOTE: 8/10 and 8/11 predate the columns — those days committed the
+  two boards as an untagged union, and the 7 overlap names cannot be
+  identified after the fact, so those two days are NOT backfillable.** score_day.py pulls
   statsapi finals + boxscores (serial + backoff, zero Odds credits), writes
   scoring/DATE_scored.csv + rebuilds scoring/summary.csv (per-market n, W-L-P-V,
   win%, MAE, bias, flat-1u units) from ALL scored files — self-healing, no
