@@ -86,7 +86,15 @@ cuts happen on scoring evidence (sec 7), never by fiat.
   Model B top-5-in-market (RANKINGS ONLY — its percentages are identical to
   Model A's, independence is weak); qualifying algo play. Max 10/day. The only
   bet-shaped output; the board prints NO algo plays. Six straight no-fire
-  slates through 8/5; architecture review whenever Grant calls one.
+  slates through 8/5; two ML locks fired 8/11 (TEX, MIL); architecture review
+  whenever Grant calls one.
+- **ALGO SCOPE (Grant ruling 8/12, restating and enforcing the line above):
+  the ONLY reason to run the algo qual test is to check for Triple Locks.
+  Claude does NOT emit an algo card, a qual list, or any ML/TOTAL play
+  recommendation — Grant plays and tracks his card himself. Nor does algo
+  eligibility filter what gets committed: projections/ carries ONE ML row per
+  game (the model's projected winner) and ONE TOTAL row per game (the model's
+  side), whole slate, so the scoring loop measures the model and not a card.**
 - Algo qual rules: plus-money dog qualifies ONLY if projected winner; negative-
   ML favorite must be projected winner, margin WITH sign, sliding margin
   (|ML|-100)/100. **THE -160 CEILING IS AN ELIGIBILITY BAR, NOT A CAP ON THE
