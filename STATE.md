@@ -89,8 +89,13 @@ cuts happen on scoring evidence (sec 7), never by fiat.
   slates through 8/5; architecture review whenever Grant calls one.
 - Algo qual rules: plus-money dog qualifies ONLY if projected winner; negative-
   ML favorite must be projected winner, margin WITH sign, sliding margin
-  (|ML|-100)/100, -160 ceiling; totals |diff| >= 0.75 tested vs the nearest
-  half-line the market ACTUALLY OFFERS (resolution rule governs the QUAL TEST).
+  (|ML|-100)/100. **THE -160 CEILING IS AN ELIGIBILITY BAR, NOT A CAP ON THE
+  REQUIRED MARGIN (Grant ruling 8/12): a favorite priced worse than -160 is NOT
+  an algo play at all, however large its projected margin.** The prior reading
+  (slide capped at 0.60, heavy favorites still eligible) is WRONG and retired --
+  it wrongly qualified TB -194 on 8/12 and would have fired a Triple Lock.
+  Totals |diff| >= 0.75 tested vs the nearest half-line the market ACTUALLY
+  OFFERS (resolution rule governs the QUAL TEST).
 
 ## 5. BOARD STANDARDS (v2.1 emission — unchanged by the rework)
 Icon key FIRST (not optional). Split OVER/UNDER boards per model, every row
