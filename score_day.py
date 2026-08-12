@@ -6,7 +6,16 @@ card. Every projection row on the board gets scored against finals. Dollar P&L
 is Grant's alone and never appears here.
 
 PROJECTIONS SCHEMA — projections/YYYY-MM-DD.csv, one row per board entry:
-  date,game_pk,away,home,market,entity,player_id,line,side,proj,price,ts
+  date,game_pk,away,home,market,entity,player_id,line,side,proj,price,ts,board,ev
+    board  : TB rows only — which of the two TB boards carried this name.
+             EV = EV-per-$100 board only | Z = pure-z board only | BOTH = on
+             both. Blank for every other market (they have one board each).
+             Added 8/12 so the EV-vs-edge open item is measurable from the
+             record instead of inferred; before 8/12 the two boards were
+             committed as an untagged union and cannot be separated.
+    ev     : TB rows only — modelled EV per $100 at the stored price, the EV
+             board's actual ranking basis. proj carries z for BOTH boards, so
+             without this column the EV ranking was absent from the file.
     market : ML | TOTAL | TT | TB | HRR | K | BB | ER
     entity : team abbrev (ML/TT), "GAME" (TOTAL), or player name w/ team tag
              e.g. "Riley Greene (DET)" (TB/HRR/K/BB/ER)
@@ -50,7 +59,8 @@ API_GH = "https://api.github.com"
 API_MLB = "https://statsapi.mlb.com/api/v1"
 MARKETS = ["ML", "TOTAL", "TT", "TB", "HRR", "K", "BB", "ER"]
 SCORED_FIELDS = ["date","game_pk","away","home","market","entity","player_id",
-                 "line","side","proj","price","ts","actual","err","settle","units"]
+                 "line","side","proj","price","ts","board","ev",
+                 "actual","err","settle","units"]
 
 # ---------------------------------------------------------------- http helpers
 def _get(url, headers=None, tries=4, backoff=2.0):
