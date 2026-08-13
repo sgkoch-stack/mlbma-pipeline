@@ -347,12 +347,18 @@ def main():
         return
     c1 = gh_put_file(f"scoring/{date_iso}_scored.csv", scored_text,
                      f"scoring: {date_iso}")
-    # rebuild summary from every scored file in the repo
+    # rebuild summary from every scored file in the repo.
+    # RACE FIX (8/13): the trees/main listing can lag the contents PUT above
+    # (same staleness family as the 8/12 raw-fetch trap), which silently
+    # rebuilt summary WITHOUT the day just scored. Seed with the in-memory
+    # scored text and skip this date's path in the tree listing.
     url = f"{API_GH}/repos/{REPO}/git/trees/main?recursive=1"
     tree = _get(url, headers=_gh_headers())
-    texts = []
+    texts = [scored_text]
+    this_path = f"scoring/{date_iso}_scored.csv"
     for t in tree["tree"]:
-        if t["path"].startswith("scoring/") and t["path"].endswith("_scored.csv"):
+        if (t["path"].startswith("scoring/") and t["path"].endswith("_scored.csv")
+                and t["path"] != this_path):
             txt, _ = gh_get_file(t["path"])
             texts.append(txt)
     c2 = gh_put_file("scoring/summary.csv", rebuild_summary(texts),
