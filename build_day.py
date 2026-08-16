@@ -458,8 +458,8 @@ for g in games:
         need = (abs(ml_w) - 100) / 100; ml_qual = margin >= need; ml_note = f'margin {margin:.2f} vs need {need:.2f}'
     # totals qual: whole line -> conservative half-line (the one nearer the model's number is the harder test)
     if tot % 1 == 0:
-        test_line = tot - 0.5 if tside == 'Under' else tot + 0.5  # harder half-line
-        alt_test = bet_line
+        test_line = bet_line  # Grant ruling 8/16: whole-number totals test vs the HALF-RUN RUNG (the line actually bet)
+        alt_test = tot - 0.5 if tside == 'Under' else tot + 0.5  # harder rung, info only
     else:
         test_line = alt_test = tot
     t_qual = abs(proj_t - test_line) >= 0.75
