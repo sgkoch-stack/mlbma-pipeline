@@ -1,5 +1,5 @@
 """
-Prototype TB / HRR probability model (v0.1) — PA-level convolution.
+Prototype TB / HRR probability model (v0.2) — PA-level convolution.
 P(TB>=2) and P(H+R+RBI>=line) per hitter per game, compared to market implied prob.
 Inputs: statsapi season + vl/vr splits (hitters, SPs), team pitching (pen proxy),
 league totals, actual lineup slot (backtest only), SP identity.
@@ -76,7 +76,7 @@ class PropModel:
         for pid, g in H.groupby('player_id'):
             ov = g[g.type=='season']
             if ov.empty: continue
-            ov = ov.iloc[0]
+            ov = ov.sort_values('plateAppearances', ascending=False).iloc[0]   # traded players: take the combined (largest) row
             r_ov, n_ov = rates_from(ov)
             r_ov = shrink(r_ov, n_ov, self.lg, K_HIT_OVR)
             rec = dict(name=ov['name'], bats=ov['bats'], pa=n_ov, ovr=r_ov,
@@ -93,11 +93,13 @@ class PropModel:
         for pid, g in P.groupby('player_id'):
             ov = g[g.type=='season']
             if ov.empty: continue
-            ov = ov.iloc[0]
+            ov = ov.sort_values('battersFaced', ascending=False).iloc[0]   # traded players: combined row
             r_ov, n_ov = rates_from(ov, bf=True)
             r_ov = shrink(r_ov, n_ov, self.lg, K_PIT_OVR)
             gs = float(ov.get('gamesStarted',0) or 0); ip = float(ov.get('inningsPitched',0) or 0)
             outs = (int(ip)*3 + round((ip-int(ip))*10)) / gs if gs>0 else 15
+            gp = float(ov.get('gamesPlayed',0) or 0)
+            if gs < 10 and gp > 2*gs: outs = min(outs, 9)   # opener / swingman: relief IP inflates IP/GS (Tidwell/Bachar trap) -> cap workload
             rec = dict(name=ov['name'], throws=ov['throws'], bf=n_ov, ovr=r_ov, outs=outs)
             for sc in ['vl','vr']:
                 s = g[(g.type=='statSplits')&(g.split==sc)]
