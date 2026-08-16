@@ -54,6 +54,13 @@ if posted else projected (exp); weather best-available (exp); a build NEVER
 stalls waiting on confirmations. Credits never gate a pull.
 
 ## 4. THE MODELS (all 8 markets stay: ML, TOTAL, TT, TB, HRR, K, BB, ER)
+- **REBUILD IN PROGRESS (S 8/16): propmodel.py (TB/HRR, v0.2) and ttmodel.py (TEAM
+  TOTALS, v0.1) are PA-level probability models vs the no-vig market — they supersede
+  the z/EV TB, HRR and margin-based TT rows below for BOARD purposes; propboards/ and
+  ttboards/ are their forward records (score them from statsapi boxscores; score_day
+  does not know about them yet). Interim ruling (Grant 8/16): old TB/HRR z-EV boards
+  OFF; K OFF; BB OFF; ER Unders only cap 4; ML/TOTAL unchanged. Next: K rebuild, then
+  fold both new models into build_day.py and rewrite this section.**
 Simplification applies to how the system is RUN, not model coverage. Future
 cuts happen on scoring evidence (sec 7), never by fiat.
 - **Spec sources (the reconstruction set, proven at B 8/4 + B 8/5):** SPEC v1.1
