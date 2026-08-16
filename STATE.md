@@ -103,7 +103,11 @@ cuts happen on scoring evidence (sec 7), never by fiat.
   (slide capped at 0.60, heavy favorites still eligible) is WRONG and retired --
   it wrongly qualified TB -194 on 8/12 and would have fired a Triple Lock.
   Totals |diff| >= 0.75 tested vs the nearest half-line the market ACTUALLY
-  OFFERS (resolution rule governs the QUAL TEST).
+  OFFERS (resolution rule governs the QUAL TEST). **WHOLE-NUMBER TOTALS (Grant
+  ruling 8/16): the qual test uses the HALF-RUN RUNG — the half-line the
+  half-run ruling would have you bet (Under 9.0 -> test vs 9.5; Over 9.0 ->
+  test vs 8.5), NOT the harder rung. Fired AZ@ATL U9.5 8/16 (model 8.40 vs 9.0:
+  -1.10 vs 9.5).**
 
 ## 5. BOARD STANDARDS (v2.1 emission — unchanged by the rework)
 Icon key FIRST (not optional). Split OVER/UNDER boards per model, every row
