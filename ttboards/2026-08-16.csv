@@ -1,0 +1,121 @@
+date,game,team,line,side,p_model,p_mkt,edge,price,book,nb,mean,lineup,on_board
+2026-08-16,BAL@TB,BAL,2.5,Over,0.715,0.6,0.115,-167,williamhill_us,2,4.52,CONF (statsapi),False
+2026-08-16,BAL@TB,BAL,2.5,Under,0.285,0.4,-0.115,143,betrivers,2,4.52,CONF (statsapi),False
+2026-08-16,BAL@TB,BAL,3.5,Over,0.579,0.456,0.123,115,betmgm,5,4.52,CONF (statsapi),True
+2026-08-16,BAL@TB,BAL,3.5,Under,0.421,0.544,-0.123,-134,betrivers,5,4.52,CONF (statsapi),False
+2026-08-16,BAL@TB,BAL,4.5,Over,0.449,0.327,0.121,190,betrivers,2,4.52,CONF (statsapi),False
+2026-08-16,BAL@TB,BAL,4.5,Under,0.551,0.673,-0.121,-245,betrivers,2,4.52,CONF (statsapi),False
+2026-08-16,BAL@TB,TB,2.5,Over,0.758,0.678,0.08,-250,williamhill_us,2,4.79,CONF (statsapi),False
+2026-08-16,BAL@TB,TB,2.5,Under,0.242,0.322,-0.08,205,betrivers,2,4.79,CONF (statsapi),False
+2026-08-16,BAL@TB,TB,3.5,Over,0.623,0.524,0.099,-125,fanduel,5,4.79,CONF (statsapi),True
+2026-08-16,BAL@TB,TB,3.5,Under,0.377,0.476,-0.099,105,betrivers,5,4.79,CONF (statsapi),False
+2026-08-16,BAL@TB,TB,4.5,Over,0.485,0.392,0.093,140,williamhill_us,2,4.79,CONF (statsapi),False
+2026-08-16,BAL@TB,TB,4.5,Under,0.515,0.608,-0.093,-177,betrivers,2,4.79,CONF (statsapi),False
+2026-08-16,BOS@PIT,BOS,4.5,Over,0.39,0.441,-0.051,115,williamhill_us,5,4.11,CONF (statsapi),False
+2026-08-16,BOS@PIT,BOS,4.5,Under,0.61,0.559,0.051,-141,betrivers,5,4.11,CONF (statsapi),False
+2026-08-16,BOS@PIT,PIT,3.5,Over,0.586,0.529,0.057,-125,williamhill_us,5,4.51,rotowire Confirmed Lineup,False
+2026-08-16,BOS@PIT,PIT,3.5,Under,0.414,0.471,-0.057,100,fanduel,5,4.51,rotowire Confirmed Lineup,False
+2026-08-16,AZ@ATL,AZ,3.5,Over,0.583,0.584,-0.001,-159,betrivers,2,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,AZ,3.5,Under,0.417,0.416,0.001,128,betrivers,2,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,AZ,4.5,Over,0.451,0.459,-0.008,112,fanduel,5,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,AZ,4.5,Under,0.549,0.541,0.008,-130,betmgm,5,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,AZ,5.5,Over,0.331,0.352,-0.022,180,betrivers,2,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,AZ,5.5,Under,0.669,0.648,0.022,-200,williamhill_us,2,4.54,CONF (statsapi),False
+2026-08-16,AZ@ATL,ATL,3.5,Over,0.485,0.623,-0.138,-190,betrivers,2,3.77,CONF (statsapi),False
+2026-08-16,AZ@ATL,ATL,3.5,Under,0.515,0.377,0.138,150,williamhill_us,2,3.77,CONF (statsapi),False
+2026-08-16,AZ@ATL,ATL,4.5,Over,0.34,0.49,-0.15,100,fanduel,5,3.77,CONF (statsapi),False
+2026-08-16,AZ@ATL,ATL,4.5,Under,0.66,0.51,0.15,-118,williamhill_us,5,3.77,CONF (statsapi),True
+2026-08-16,AZ@ATL,ATL,5.5,Over,0.227,0.372,-0.145,163,betrivers,2,3.77,CONF (statsapi),False
+2026-08-16,AZ@ATL,ATL,5.5,Under,0.773,0.628,0.145,-187,williamhill_us,2,3.77,CONF (statsapi),False
+2026-08-16,NYY@TOR,NYY,2.5,Over,0.533,0.568,-0.035,-145,draftkings,3,3.13,CONF (statsapi),False
+2026-08-16,NYY@TOR,NYY,2.5,Under,0.467,0.432,0.035,120,betrivers,3,3.13,CONF (statsapi),False
+2026-08-16,NYY@TOR,NYY,3.5,Over,0.379,0.426,-0.047,123,betrivers,2,3.13,CONF (statsapi),False
+2026-08-16,NYY@TOR,NYY,3.5,Under,0.621,0.574,0.047,-152,betrivers,2,3.13,CONF (statsapi),False
+2026-08-16,NYY@TOR,TOR,3.5,Over,0.476,0.448,0.029,112,fanduel,4,3.71,CONF (statsapi),False
+2026-08-16,NYY@TOR,TOR,3.5,Under,0.524,0.552,-0.029,-135,draftkings,4,3.71,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,2.5,Over,0.709,0.647,0.062,-220,betrivers,2,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,2.5,Under,0.291,0.353,-0.062,170,betrivers,2,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,3.5,Over,0.576,0.516,0.06,-118,betrivers,5,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,3.5,Under,0.424,0.484,-0.06,-102,fanduel,5,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,4.5,Over,0.445,0.391,0.054,145,betrivers,2,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,WSH,4.5,Under,0.555,0.609,-0.054,-182,williamhill_us,2,4.5,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,3.5,Over,0.584,0.622,-0.038,-186,betrivers,2,4.49,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,3.5,Under,0.416,0.378,0.038,150,williamhill_us,2,4.49,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,4.5,Over,0.445,0.5,-0.055,-104,betrivers,5,4.49,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,4.5,Under,0.555,0.5,0.055,-111,fanduel,5,4.49,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,5.5,Over,0.321,0.373,-0.053,163,betrivers,2,4.49,CONF (statsapi),False
+2026-08-16,WSH@NYM,NYM,5.5,Under,0.679,0.627,0.053,-187,williamhill_us,2,4.49,CONF (statsapi),False
+2026-08-16,SD@CLE,SD,3.5,Over,0.498,0.563,-0.065,-148,fanduel,3,3.9,CONF (statsapi),False
+2026-08-16,SD@CLE,SD,3.5,Under,0.502,0.437,0.065,120,betrivers,3,3.9,CONF (statsapi),False
+2026-08-16,SD@CLE,SD,4.5,Over,0.365,0.439,-0.074,115,williamhill_us,4,3.9,CONF (statsapi),False
+2026-08-16,SD@CLE,SD,4.5,Under,0.635,0.561,0.074,-141,betrivers,4,3.9,CONF (statsapi),True
+2026-08-16,SD@CLE,SD,5.5,Over,0.254,0.333,-0.079,185,betrivers,2,3.9,CONF (statsapi),False
+2026-08-16,SD@CLE,SD,5.5,Under,0.746,0.667,0.079,-235,betrivers,2,3.9,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,2.5,Over,0.689,0.673,0.016,-225,williamhill_us,2,4.14,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,2.5,Under,0.311,0.327,-0.016,205,betrivers,2,4.14,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,3.5,Over,0.54,0.531,0.009,-125,fanduel,5,4.14,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,3.5,Under,0.46,0.469,-0.009,110,betrivers,5,4.14,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,4.5,Over,0.396,0.397,-0.002,140,williamhill_us,2,4.14,CONF (statsapi),False
+2026-08-16,SD@CLE,CLE,4.5,Under,0.604,0.603,0.002,-167,betrivers,2,4.14,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,2.5,Over,0.729,0.672,0.057,-250,williamhill_us,2,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,2.5,Under,0.271,0.328,-0.057,200,betrivers,2,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,3.5,Over,0.595,0.545,0.05,-133,williamhill_us,5,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,3.5,Under,0.405,0.455,-0.05,110,draftkings,5,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,4.5,Over,0.463,0.409,0.053,130,williamhill_us,2,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,CWS,4.5,Under,0.537,0.591,-0.053,-162,betrivers,2,4.64,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,2.5,Over,0.683,0.689,-0.006,-275,williamhill_us,2,4.12,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,2.5,Under,0.317,0.311,0.006,215,betrivers,2,4.12,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,3.5,Over,0.533,0.551,-0.018,-136,fanduel,5,4.12,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,3.5,Under,0.467,0.449,0.018,115,betrivers,5,4.12,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,4.5,Over,0.392,0.416,-0.023,130,williamhill_us,2,4.12,CONF (statsapi),False
+2026-08-16,CWS@DET,DET,4.5,Under,0.608,0.584,0.023,-157,betrivers,2,4.12,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,3.5,Over,0.672,0.604,0.067,-175,betrivers,2,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,3.5,Under,0.328,0.396,-0.067,140,betrivers,2,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,4.5,Over,0.55,0.48,0.07,-102,fanduel,5,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,4.5,Under,0.45,0.52,-0.07,-120,draftkings,5,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,5.5,Over,0.431,0.366,0.065,160,williamhill_us,2,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,MIA,5.5,Under,0.569,0.634,-0.065,-200,williamhill_us,2,5.36,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,2.5,Over,0.669,0.677,-0.008,-250,williamhill_us,2,3.97,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,2.5,Under,0.331,0.323,0.008,200,betrivers,2,3.97,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,3.5,Over,0.513,0.541,-0.028,-130,betmgm,5,3.97,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,3.5,Under,0.487,0.459,0.028,108,fanduel,5,3.97,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,4.5,Over,0.374,0.407,-0.033,135,betrivers,2,3.97,CONF (statsapi),False
+2026-08-16,MIA@CIN,CIN,4.5,Under,0.626,0.593,0.033,-167,williamhill_us,2,3.97,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,3.5,Over,0.647,0.634,0.013,-200,williamhill_us,2,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,3.5,Under,0.353,0.366,-0.013,165,betrivers,2,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,4.5,Over,0.52,0.516,0.004,-115,fanduel,5,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,4.5,Under,0.48,0.484,-0.004,-103,betrivers,5,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,5.5,Over,0.401,0.404,-0.003,137,williamhill_us,2,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,PHI,5.5,Under,0.599,0.596,0.003,-165,betrivers,2,5.1,CONF (statsapi),False
+2026-08-16,PHI@MIN,MIN,3.5,Over,0.7,0.62,0.08,-187,williamhill_us,2,5.46,CONF (statsapi),False
+2026-08-16,PHI@MIN,MIN,3.5,Under,0.3,0.38,-0.08,155,betrivers,2,5.46,CONF (statsapi),False
+2026-08-16,PHI@MIN,MIN,4.5,Over,0.571,0.48,0.092,-104,fanduel,5,5.46,CONF (statsapi),True
+2026-08-16,PHI@MIN,MIN,4.5,Under,0.429,0.52,-0.092,-115,betrivers,5,5.46,CONF (statsapi),False
+2026-08-16,PHI@MIN,MIN,5.5,Over,0.445,0.366,0.079,160,williamhill_us,2,5.46,CONF (statsapi),False
+2026-08-16,PHI@MIN,MIN,5.5,Under,0.555,0.634,-0.079,-200,williamhill_us,2,5.46,CONF (statsapi),False
+2026-08-16,STL@CHC,STL,3.5,Over,0.634,0.52,0.114,-118,fanduel,5,5.01,rotowire Expected Lineup,True
+2026-08-16,STL@CHC,STL,3.5,Under,0.366,0.48,-0.114,100,betrivers,5,5.01,rotowire Expected Lineup,False
+2026-08-16,STL@CHC,CHC,4.5,Over,0.505,0.526,-0.021,-118,betrivers,5,4.94,rotowire Expected Lineup,False
+2026-08-16,STL@CHC,CHC,4.5,Under,0.495,0.474,0.021,100,draftkings,5,4.94,rotowire Expected Lineup,False
+2026-08-16,COL@SF,COL,3.5,Over,0.588,0.52,0.068,-113,fanduel,5,4.64,rotowire Expected Lineup,False
+2026-08-16,COL@SF,COL,3.5,Under,0.412,0.48,-0.068,100,betmgm,5,4.64,rotowire Expected Lineup,False
+2026-08-16,COL@SF,SF,3.5,Over,0.622,0.563,0.058,-142,fanduel,5,4.75,rotowire Expected Lineup,False
+2026-08-16,COL@SF,SF,3.5,Under,0.378,0.437,-0.058,120,draftkings,5,4.75,rotowire Expected Lineup,False
+2026-08-16,TEX@ATH,TEX,5.5,Over,0.452,0.459,-0.007,110,betmgm,5,5.54,rotowire Expected Lineup,False
+2026-08-16,TEX@ATH,TEX,5.5,Under,0.548,0.541,0.007,-130,betrivers,5,5.54,rotowire Expected Lineup,False
+2026-08-16,TEX@ATH,ATH,4.5,Over,0.387,0.469,-0.082,104,fanduel,5,4.08,rotowire Expected Lineup,False
+2026-08-16,TEX@ATH,ATH,4.5,Under,0.613,0.531,0.082,-124,betrivers,5,4.08,rotowire Expected Lineup,True
+2026-08-16,KC@LAA,KC,4.5,Over,0.502,0.48,0.022,100,fanduel,5,4.96,rotowire Expected Lineup,False
+2026-08-16,KC@LAA,KC,4.5,Under,0.498,0.52,-0.022,-108,betrivers,5,4.96,rotowire Expected Lineup,False
+2026-08-16,KC@LAA,LAA,3.5,Over,0.593,0.563,0.03,-148,betrivers,3,4.54,rotowire Expected Lineup,False
+2026-08-16,KC@LAA,LAA,3.5,Under,0.407,0.437,-0.03,115,williamhill_us,3,4.54,rotowire Expected Lineup,False
+2026-08-16,KC@LAA,LAA,4.5,Over,0.451,0.428,0.023,120,draftkings,3,4.54,rotowire Expected Lineup,False
+2026-08-16,KC@LAA,LAA,4.5,Under,0.549,0.572,-0.023,-148,fanduel,3,4.54,rotowire Expected Lineup,False
+2026-08-16,MIL@LAD,MIL,2.5,Over,0.628,0.563,0.065,-148,fanduel,3,3.75,rotowire Expected Lineup,False
+2026-08-16,MIL@LAD,MIL,2.5,Under,0.372,0.437,-0.065,120,draftkings,3,3.75,rotowire Expected Lineup,False
+2026-08-16,MIL@LAD,LAD,3.5,Over,0.505,0.559,-0.055,-145,draftkings,3,3.89,rotowire Expected Lineup,False
+2026-08-16,MIL@LAD,LAD,3.5,Under,0.495,0.441,0.055,115,betmgm,3,3.89,rotowire Expected Lineup,False
+2026-08-16,SEA@HOU,SEA,3.5,Over,0.602,0.528,0.073,-121,betrivers,5,4.73,rotowire Expected Lineup,True
+2026-08-16,SEA@HOU,SEA,3.5,Under,0.398,0.472,-0.073,100,draftkings,5,4.73,rotowire Expected Lineup,False
+2026-08-16,SEA@HOU,HOU,3.5,Over,0.54,0.545,-0.005,-129,betrivers,5,4.15,rotowire Expected Lineup,False
+2026-08-16,SEA@HOU,HOU,3.5,Under,0.46,0.455,0.005,110,draftkings,5,4.15,rotowire Expected Lineup,False
