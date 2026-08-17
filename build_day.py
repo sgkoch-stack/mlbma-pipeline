@@ -10,11 +10,13 @@ import openpyxl
 sys.path.insert(0, '.')
 from pricing import am_to_prob, prob_to_am, novig_two_way, is_corrupt_am
 
-DATE = '2026-08-16'
-TS = '2026-08-16T15:30:00Z'
+import datetime as _dt
+DATE = os.environ.get('MLBMA_DATE') or _dt.date.today().isoformat()
+TS = os.environ.get('MLBMA_TS') or _dt.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00Z')
 ACTIONABLE = {'draftkings', 'fanduel', 'williamhill_us', 'betmgm', 'betrivers', 'pinnacle', 'lowvig', 'hardrockbet', 'bet365'}
 ALIAS = {'ARI': 'AZ', 'CHW': 'CWS', 'OAK': 'ATH', 'WAS': 'WSH', 'KCR': 'KC', 'SDP': 'SD', 'SFG': 'SF', 'TBR': 'TB', 'WSN': 'WSH'}
 def A(t): return ALIAS.get(t, t)
+def base(t): return t.split('#')[0]   # DH-safe team key: 'STL#1' -> 'STL' for stat lookups; suffix only on DH game 1
 def norm(s):
     s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
     s = re.sub(r'\b(jr|sr|ii|iii|iv)\.?$', '', s.strip()).replace('.', '').replace("'", '').strip()
@@ -60,6 +62,9 @@ def fnum(v):
 
 # ---------------- load ----------------
 games = json.load(open('games.json')); lineups = json.load(open('lineups.json')); splits = json.load(open('splits.json'))
+for _g in games:
+    _suf = '#1' if (_g.get('dh') in ('S','Y') and _g.get('gn') == 1) else ''
+    _g['away_k'] = _g['away'] + _suf; _g['home_k'] = _g['home'] + _suf; _g['mkey'] = f"{_g['away']}@{_g['home']}" + ('#'+str(_g['gn']) if _g.get('dh') in ('S','Y') else '')
 sp_hands = {int(k): v for k, v in json.load(open('sp_hands.json')).items()}
 model_a = json.load(open('model_a.json')); model_b = json.load(open('model_b.json')); props_page = json.load(open('props_page.json'))
 weather = json.load(open('weather.json'))
@@ -73,7 +78,7 @@ for r in wb['Hitters, 26'].iter_rows(min_row=3, values_only=True):
                      'wRC': r[19], 'K': r[20], 'BB': r[21], 'Chase': r[24], 'Pull': r[32], 'HH95': r[34], 'BRL': r[35], 'H': r[40]}
 # SP tab (PROBABLES has all 30, full 93 cols)
 SP = {}
-for r in wb['PROBABLES 816'].iter_rows(min_row=3, values_only=True):
+for r in wb[[t for t in wb.sheetnames if t.startswith('PROBABLES')][0]].iter_rows(min_row=3, values_only=True):
     if not r[3]: continue
     g = lambda i: fnum(r[i - 1])
     SP[norm(r[3])] = {'team': A(r[2]), 'name': r[3], 'IP': g(5), 'ERA': g(6), 'WHIP': g(7), 'xERA': g(8), 'SIERA': g(9), 'Stuff': g(14), 'K%': g(15), 'BB%': g(16),
@@ -94,7 +99,9 @@ LG = {k: statistics.mean(v[k] for v in TMO.values() if v[k] is not None) for k i
 # ITT tab
 ITT = {}
 for r in wb['ITT!'].iter_rows(min_row=3, max_col=6, values_only=True):
-    if r[1] and isinstance(r[2], (int, float)): ITT[A(r[1])] = float(r[2])
+    if r[1] and isinstance(r[2], (int, float)):
+        _t = str(r[1]); _k = A(_t[1:]) + '#1' if _t[0] in 'yz' and _t[1:].isupper() else A(_t)
+        ITT[_k] = float(r[2])
 SPRANK = {}
 for r in wb['SP Ranks+Ks'].iter_rows(min_row=3, max_col=6, values_only=True):
     if r[2] and r[2] != 'BULLPEN': SPRANK[norm(r[2])] = r[5]
@@ -102,9 +109,9 @@ for r in wb['SP Ranks+Ks'].iter_rows(min_row=3, max_col=6, values_only=True):
 # ---------------- odds ----------------
 raw_props = json.load(open(f'odds_out/raw_props_{DATE}.json'))
 events = json.load(open(f'odds_out/events_{DATE}.json'))
-gl = {r['matchup']: r for r in csv.DictReader(open(f'odds_out/game_lines_{DATE}.csv'))}
+gl = {r['event_id']: r for r in csv.DictReader(open(f'odds_out/game_lines_{DATE}.csv'))}
 alt_tot = json.load(open('odds_out/alt_totals.json'))
-def gk(away, home): return f"{'CHW' if away=='CWS' else away}@{'CHW' if home=='CWS' else home}"
+def gk(away, home, gn=None): return f"{'CHW' if away=='CWS' else away}@{'CHW' if home=='CWS' else home}" + (f'#{gn}' if gn else '')
 # per-event per-book quotes: quotes[eid][market][(player,point)] = list of (book, over, under)
 quotes = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 for eid, data in raw_props.items():
@@ -132,11 +139,13 @@ def modal_point(mkt_q):
     pts = defaultdict(int)
     for (pl, pt), rows in mkt_q.items(): pts[pt] += len(rows)
     return max(pts, key=pts.get) if pts else None
-def event_for(away, home):
-    for ev in events:
-        from pull_odds import team_abbr
-        if team_abbr(ev['away_team']) == ('CHW' if away == 'CWS' else away) and team_abbr(ev['home_team']) == ('CHW' if home == 'CWS' else home): return ev['id']
-    return None
+def event_for(away, home, gn=None):
+    from pull_odds import team_abbr
+    c = [ev for ev in events if team_abbr(ev['away_team']) == ('CHW' if away == 'CWS' else away) and team_abbr(ev['home_team']) == ('CHW' if home == 'CWS' else home)]
+    c.sort(key=lambda e: e['commence_time'])
+    if not c: return None
+    if gn and len(c) >= gn: return c[gn - 1]['id']
+    return c[0]['id']
 def player_quotes(eid, market, pname, point=None):
     q = quotes[eid][market]; out = {}
     for (pl, pt), rows in q.items():
@@ -161,7 +170,7 @@ for g in games:
         tb_wx += 0.1215 * (w['temp'] - pm)
         tt_wx += 0.714 * 0.0355 * (w['temp'] - pm)
     gm[gp] = {'g': g, 'dome': dome, 'tb_wx': tb_wx, 'tt_wx': tt_wx, 'wbin': wbin, 'wdir': wdir, 'w': w, 'venue': venue,
-              'park_pp': TB_PARK_PP.get(venue, 0.0), 'park_tt': TT_PARK[g['home']], 'eid': event_for(g['away'], g['home'])}
+              'park_pp': TB_PARK_PP.get(venue, 0.0), 'park_tt': TT_PARK[g['home']], 'eid': event_for(g['away'], g['home'], g.get('gn') if g.get('dh') in ('S','Y') else None)}
 
 # ---------------- pitcher table (per starter, incl. opener protocol) ----------------
 OPENERS = {'Lake Bachar'}  # PIT listed BULLPEN in workbook; Bachar 8.5-out profile
@@ -169,7 +178,7 @@ P = {}
 for g in games:
     gp = str(g['game_pk'])
     for side in ('away', 'home'):
-        nm = g[side + '_sp']; pid = g[side + '_sp_id']; team = g[side]; opp = g['home' if side == 'away' else 'away']
+        nm = g[side + '_sp']; pid = g[side + '_sp_id']; team = g[side + '_k']; opp = g[('home' if side == 'away' else 'away') + '_k']
         hand = sp_hands[pid][1]
         sp = SP.get(norm(nm))
         pp = props_page.get(norm(nm), {})
@@ -214,7 +223,7 @@ L = []  # hitter rows
 for g in games:
     gp = str(g['game_pk'])
     for side in ('away', 'home'):
-        team = g[side]; opp = g['home' if side == 'away' else 'away']
+        team = g[side + '_k']; opp = g[('home' if side == 'away' else 'away') + '_k']
         opp_pid = g[('home' if side == 'away' else 'away') + '_sp_id']
         lu = lineups[gp][side]
         for pl in lu['players']:
@@ -238,7 +247,7 @@ def lw_ops_vs_hand(team):
     for h in byteam[team]:
         if h['split_ops'] is not None:
             w = SLOT_PA[h['slot']]; num += w * h['split_ops']; den += w
-    return num / den if den else TMO[team]['OPS']
+    return num / den if den else TMO[base(team)]['OPS']
 def lr_share(team):
     """share of lineup PA from L-side bats vs the opposing SP hand (for hand-weighted OPS allowed)."""
     opp_hand = P[byteam[team][0]['opp_pid']]['hand'] if byteam[team] else 'R'
@@ -253,8 +262,8 @@ def lr_share(team):
 # ---------------- opponent-adjusted pitcher terms ----------------
 for p in P.values():
     t = p['opp']
-    p['opp_K'] = lw(t, 'K') or TMO[t]['K']; p['opp_BB'] = lw(t, 'BB') or TMO[t]['BB']; p['opp_Chase'] = lw(t, 'Chase') or TMO[t]['Chase']
-    p['opp_xwOBA'] = lw(t, 'xwOBA') or TMO[t]['xwOBA']
+    p['opp_K'] = lw(t, 'K') or TMO[base(t)]['K']; p['opp_BB'] = lw(t, 'BB') or TMO[base(t)]['BB']; p['opp_Chase'] = lw(t, 'Chase') or TMO[base(t)]['Chase']
+    p['opp_xwOBA'] = lw(t, 'xwOBA') or TMO[base(t)]['xwOBA']
     p['opp_adj_K'] = clip(p['opp_K'] / LG['K'], .8, 1.2); p['opp_adj_BB'] = clip(p['opp_BB'] / LG['BB'], .8, 1.2)
     p['opp_adj_ER'] = clip(p['opp_xwOBA'] / LG['xwOBA'], .8, 1.2)
     p['team_agg'] = not byteam[t]
@@ -301,8 +310,8 @@ TT = {}
 for g in games:
     gp = str(g['game_pk'])
     for side in ('away', 'home'):
-        team = g[side]; oside = 'home' if side == 'away' else 'away'; osp = P[g[oside + '_sp_id']]
-        TT[team] = {'gp': gp, 'opp': g[oside], 'osp': osp, 'home': side == 'home'}
+        team = g[side + '_k']; oside = 'home' if side == 'away' else 'away'; osp = P[g[oside + '_sp_id']]
+        TT[team] = {'gp': gp, 'opp': g[oside + '_k'], 'osp': osp, 'home': side == 'home'}
 # pitcher_vuln components (opposing SP vs THIS lineup)
 def sp_hand_wt(sp, key, team):
     if not sp: return None
@@ -316,7 +325,7 @@ v_skill = tz([(.5 * TT[t]['osp']['sp']['xERA'] + .5 * TT[t]['osp']['sp']['SIERA'
 v_ops = tz([sp_hand_wt(TT[t]['osp']['sp'], 'OPS', t) for t in teams])
 v_pow = tz([(.6 * (sp_hand_wt(TT[t]['osp']['sp'], 'HRFB', t) or 0) + .4 * (TT[t]['osp']['sp']['BRL'] or 0)) if TT[t]['osp']['sp'] else None for t in teams])
 opp_off = tz([lw_ops_vs_hand(t) for t in teams])
-pen_q = tz([.6 * PEN[TT[t]['opp']]['ERA2wk'] + .4 * PEN[TT[t]['opp']]['ERAytd'] for t in teams])
+pen_q = tz([.6 * PEN[base(TT[t]['opp'])]['ERA2wk'] + .4 * PEN[base(TT[t]['opp'])]['ERAytd'] for t in teams])
 osp_out = tz([TT[t]['osp']['outgs_adj'] for t in teams])
 park_z = tz([gm[TT[t]['gp']]['park_tt'] for t in teams])
 for t in teams:
@@ -373,9 +382,9 @@ for h in hit_pop:
     for k in comp_keys:
         comp_vals[k].append(fbgb(sp, hand) if k == 'FBGB' else sp_hand_stat(sp, hand, k))
 comp_z = {k: z(v) for k, v in comp_vals.items()}
-pen_vals = [.6 * PEN[h['opp']]['ERA2wk'] + .4 * PEN[h['opp']]['ERAytd'] for h in hit_pop]
+pen_vals = [.6 * PEN[base(h['opp'])]['ERA2wk'] + .4 * PEN[base(h['opp'])]['ERAytd'] for h in hit_pop]
 pen_z = z(pen_vals)
-pen_baa_z = z([.6 * PEN[h['opp']]['BAA2wk'] + .4 * PEN[h['opp']]['BAAytd'] for h in hit_pop])
+pen_baa_z = z([.6 * PEN[base(h['opp'])]['BAA2wk'] + .4 * PEN[base(h['opp'])]['BAAytd'] for h in hit_pop])
 sp_baa_z = z([sp_hand_stat(P[h['opp_pid']]['sp'], 'L' if h['bats'] == 'L' else 'R', 'BAA') for h in hit_pop])
 hpa = z([(h['hh']['H'] / h['hh']['PA']) if h['hh'] and h['hh']['PA'] else None for h in hit_pop])
 rpa = z([(h['hh']['R'] / h['hh']['PA']) if h['hh'] and h['hh']['PA'] else None for h in hit_pop])
@@ -439,8 +448,8 @@ def alt_total_price(matchup, point, side):
     best = max(act, key=lambda r: -am_to_prob(r[1]))[1] if act else None
     return prob_to_am(med), best
 for g in games:
-    gp = str(g['game_pk']); a, h = g['away'], g['home']; gr = gl[gk(a, h)]
-    ia, ih = ITT[a], ITT[h]
+    gp = str(g['game_pk']); a, h = g['away'], g['home']; gr = gl[gm[gp]['eid']]
+    ia, ih = ITT[g['away_k']], ITT[g['home_k']]
     winner = h if ih >= ia else a; margin = abs(ih - ia)
     ml_w = int(gr['med_ml_home'] if winner == h else gr['med_ml_away']); ml_l = int(gr['med_ml_away'] if winner == h else gr['med_ml_home'])
     tot = float(gr['market_total']); proj_t = ia + ih; diff = proj_t - tot
@@ -450,7 +459,7 @@ for g in games:
     if bet_line == tot:
         tprice = int(gr['med_total_over'] if tside == 'Over' else gr['med_total_under'])
     else:
-        tprice, _ = alt_total_price(gk(a, h), bet_line, tside)
+        tprice, _ = alt_total_price(gk(a, h, g.get('gn') if g.get('dh') in ('S','Y') else None), bet_line, tside)
     # algo qual
     if ml_w > 0: ml_qual = True; ml_note = 'dog projected winner'
     elif ml_w < -160: ml_qual = False; ml_note = f'{ml_w} outside -160 bar'
@@ -464,7 +473,7 @@ for g in games:
         test_line = alt_test = tot
     t_qual = abs(proj_t - test_line) >= 0.75
     t_qual_alt = abs(proj_t - alt_test) >= 0.75
-    ma = model_a[f'{a}@{h}']; mb = model_b[f'{a}@{h}']
+    ma = model_a[g['mkey']]; mb = model_b[g['mkey']]
     GAME[gp] = {'a': a, 'h': h, 'ia': ia, 'ih': ih, 'winner': winner, 'margin': margin, 'ml_w': ml_w, 'ml_l': ml_l, 'tot': tot, 'proj_t': proj_t, 'diff': diff,
                 'tside': tside, 'bet_line': bet_line, 'tprice': tprice, 'ml_qual': ml_qual, 'ml_note': ml_note, 't_qual': t_qual, 't_qual_alt': t_qual_alt,
                 'test_line': test_line, 'ma': ma, 'mb': mb, 'time': g['time'], 'venue': g['venue'],
@@ -495,7 +504,7 @@ for gp, g in GAME.items():
     R(gp, 'ML', g['winner'], '', '', g['winner'], round(g['margin'], 3), g['ml_w'])
     R(gp, 'TOTAL', f"{g['a']}@{g['h']}", '', g['bet_line'], g['tside'], round(g['proj_t'], 3), g['tprice'])
 for t, d in TT.items():
-    if d['line'] is not None: R(d['gp'], 'TT', t, '', d['line'], d['side'], round(d['score'], 5), d['price'])
+    if d['line'] is not None: R(d['gp'], 'TT', base(t), '', d['line'], d['side'], round(d['score'], 5), d['price'])
 for p in KP:
     for mk, ln, px, pr in (('K', p['K_line'], p['K_px'], p['proj_K']), ('BB', p['BB_line'], p['BB_px'], p['proj_BB']), ('ER', p['ER_line'], p['ER_px'], p['proj_ER'])):
         if ln is None: continue
@@ -534,12 +543,12 @@ with open(f'projections/{DATE}.csv', 'w', newline='') as f:
 crow = []
 tbc = sorted([h for h in hit_pop if h['tb_px'] and h['tb_px']['best_over'] is not None and h['tb_prob'] is not None], key=lambda h: -h['tb_z'])
 for i, h in enumerate(tbc):
-    crow.append({'date': DATE, 'market': 'TB', 'entity': h['name'], 'player_id': h['id'], 'team': h['team'], 'proj': round(h['tb_ev'], 2) if h['tb_ev'] is not None else '', 'z': round(h['tb_z'], 5),
+    crow.append({'date': DATE, 'market': 'TB', 'entity': h['name'], 'player_id': h['id'], 'team': base(h['team']), 'proj': round(h['tb_ev'], 2) if h['tb_ev'] is not None else '', 'z': round(h['tb_z'], 5),
                  'price': h['tb_px']['best_over'], 'rank': i + 1, 'pa': h['PA'], 'on_board': 'Y' if id(h) in tb_rows else 'N'})
 hc = sorted([h for h in hit_pop if h['hrr_line'] is not None], key=lambda h: -h['hrr'])
 hb = {id(h) for h in hrr_board}
 for i, h in enumerate(hc):
-    crow.append({'date': DATE, 'market': 'HRR', 'entity': h['name'], 'player_id': h['id'], 'team': h['team'], 'proj': round(h['hrr'], 4), 'z': round(h['hrr'], 4),
+    crow.append({'date': DATE, 'market': 'HRR', 'entity': h['name'], 'player_id': h['id'], 'team': base(h['team']), 'proj': round(h['hrr'], 4), 'z': round(h['hrr'], 4),
                  'price': h['hrr_px']['best_over'] if h['hrr_px']['best_over'] is not None else h['hrr_px']['med_over'], 'rank': i + 1, 'pa': h['PA'], 'on_board': 'Y' if id(h) in hb else 'N'})
 with open(f'candidates/{DATE}.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, fieldnames=['date', 'market', 'entity', 'player_id', 'team', 'proj', 'z', 'price', 'rank', 'pa', 'on_board'], lineterminator='\r\n'); w.writeheader(); w.writerows(crow)
