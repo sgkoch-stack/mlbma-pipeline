@@ -116,9 +116,21 @@ pdf['on_board']=False
 for mk,th in (('TB',.04),('HRR',.10)):
     sel=pdf[(pdf.market==mk)&(pdf.edge>=th)&(pdf.nbooks>=2)].sort_values('edge',ascending=False).head(8)
     pdf.loc[sel.index,'on_board']=True
+# TT GATE RECUT (Grant ruling 8/18, validated on 7 slates 8/11-8/17 w/ real morning prices):
+#   The old gate was edge>=.03 on the DE-VIGGED market prob, which is price-blind. Median vig
+#   paid on qualifying rows was exactly .030 -- i.e. half the board had no edge left after the
+#   price. Replaced with EV at the actual best actionable price: EV = (payout+1)*p_model - 1.
+#   EV subsumes the old arbitrary -180..+150 band, so the band is GONE. Dedupe now takes the
+#   best-EV rung per team (was best-edge). 7-slate result: +0.192u/bet vs +0.147 for the old rule.
+#   NO top-8 flag: sub-selecting the pool by edge rank OR EV rank UNDERPERFORMED the full pool on
+#   every block tested (pool +0.192/bet vs flagged-8 +0.006 to +0.143). Board stays uncapped per
+#   Grant's 8/16 ruling; on_board now means "cleared the gate", not "one of eight".
+tdf['pay']=tdf['price'].apply(lambda p: p/100 if pd.notna(p) and p>0 else (100/-p if pd.notna(p) else float('nan')))
+tdf['ev']=(tdf['pay']+1)*tdf['p_model']-1
 tdf['on_board']=False
-best=tdf[(tdf.edge>=.03)&(tdf.nb>=3)&(tdf.price.notna())&(tdf.price>=-180)&(tdf.price<=150)].sort_values('edge',ascending=False).drop_duplicates('team').head(8)
+best=tdf[(tdf.ev>=.03)&(tdf.nb>=3)&(tdf.price.notna())].sort_values('ev',ascending=False).drop_duplicates('team')
 tdf.loc[best.index,'on_board']=True
+tdf['ev']=tdf['ev'].round(4); tdf['pay']=tdf['pay'].round(4)
 os.makedirs('propboards',exist_ok=True); os.makedirs('ttboards',exist_ok=True)
 pdf.to_csv(f'propboards/{DATE}.csv',index=False); tdf.to_csv(f'ttboards/{DATE}.csv',index=False)
 print('prop rows',len(pdf),'TB',(pdf.market=='TB').sum(),'HRR',(pdf.market=='HRR').sum(),'| tt rows',len(tdf))
