@@ -61,6 +61,26 @@ stalls waiting on confirmations. Credits never gate a pull.
   does not know about them yet). Interim ruling (Grant 8/16): old TB/HRR z-EV boards
   OFF; K OFF; BB OFF; ER Unders only cap 4; ML/TOTAL unchanged. Next: K rebuild, then
   fold both new models into build_day.py and rewrite this section.**
+- **TT BOARD GATE — RECUT (Grant ruling 2026-08-18).** The v0.1 gate (edge >= .03 on the
+  DE-VIGGED market prob, >=3 actionable books, price band -180..+150, best-edge rung per
+  team, cap 8) was price-blind: measured over 8/16-8/17, the median vig paid on a
+  qualifying row was exactly .030, so roughly half the board carried no edge once the
+  actual price was applied. REPLACED BY: **EV >= .03 at the best actionable price, where
+  EV = (payout+1) * p_model - 1; >= 3 actionable books; best-EV rung per team.** The
+  -180..+150 band is DELETED — EV prices the price directly, so the band was arbitrary
+  double-counting. Validated on 7 slates (8/11-8/15 reconstructed against real ~15:00Z
+  morning prices, us+us2 actionable books, evidence file analysis/tt_gate_recut_2026-08-18.csv;
+  8/16-8/17 live): new gate +0.192u/bet on 114 bets vs +0.147u/bet on 125 for the old rule,
+  same direction in both blocks. Caveat: the 8/11-8/15 model rows carry as-of-date stat
+  contamination, so the LEVEL is optimistic; the gate-vs-gate COMPARISON is not affected.
+- **NO TOP-8 FLAG ON THE TT BOARD.** Sub-selecting the qualifying pool underperformed the
+  pool itself on every block and every basis tested (pool +0.192u/bet; top-8 by edge
+  +0.085; top-8 by EV +0.006). Ranking by EV is actively harmful — it loads the card onto
+  the longest prices, where model error is multiplied. Within the qualifying pool the
+  edge ordering was INVERTED over 7 slates (smallest-edge quartile +0.523u/bet, largest
+  +0.040) — noted as suggestive only, NOT acted on. `on_board` now means "cleared the
+  gate", not "one of eight"; the board stays uncapped per Grant's 8/16 ruling and how
+  many he fills is his call.
 Simplification applies to how the system is RUN, not model coverage. Future
 cuts happen on scoring evidence (sec 7), never by fiat.
 - **Spec sources (the reconstruction set, proven at B 8/4 + B 8/5):** SPEC v1.1
