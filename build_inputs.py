@@ -1,5 +1,5 @@
 import json,re,unicodedata,time,urllib.request,urllib.parse,sys
-DATE='2026-08-17'
+DATE='2026-08-18'
 def get(u,tries=6):
     for i in range(tries):
         try:
@@ -22,7 +22,12 @@ for t in teams:
     roster[t]={norm(p['person']['fullName']):p['person']['id'] for p in r['roster']}
     time.sleep(0.3)
 # override BOS SP + workbook opener rule
-SP_OVERRIDE={'824725':('home','Brayan Bello',678394)}
+SP_OVERRIDE={  # gp -> list of (side, name, mlbam_id). LIST, not a tuple: 824075 needs BOTH sides.
+ '823423':[('away','Tyler Phillips',663969)],   # MIA: Cade Gibson opens (market prices him ER 0.5 only); Phillips is the bulk arm
+ '824075':[('away','Jack Perkins',678022),      # ATH: Brady Basso opens (ER 0.5 only); Perkins keeps K 3.5 + ER 2.5 = bulk
+           ('home','Daniel Lynch IV',663738)],  # KC: statsapi + workbook agree Lynch (ER 1.5); rotowire's Mason Black was WRONG
+ '824639':[('away','Erick Fedde',607200)],      # CWS: Bryan Hudson opens (ER 0.5 only); Fedde bulk per workbook + rotowire
+}
 games=[];lineups={};sp_ids=set()
 def rw_block(g):
     # match by teams + time (DH)
@@ -46,7 +51,7 @@ for g in sched:
     gp=str(g['game_pk']); b=rw_block(g); w=wx_block(g)
     assert b and w, (g['away'],g['home'],g['time'])
     if gp in SP_OVERRIDE:
-        side,nm,pid=SP_OVERRIDE[gp]; g[side+'_sp']=nm; g[side+'_sp_id']=pid
+        for side,nm,pid in SP_OVERRIDE[gp]: g[side+'_sp']=nm; g[side+'_sp_id']=pid
     games.append(dict(game_pk=g['game_pk'],time=g['time'],away=g['away'],home=g['home'],venue=g['venue'],away_sp=g['away_sp'],away_sp_id=g['away_sp_id'],home_sp=g['home_sp'],home_sp_id=g['home_sp_id'],dh=g['dh'],gn=g['gn']))
     sp_ids.update([g['away_sp_id'],g['home_sp_id']])
     lineups[gp]={}
