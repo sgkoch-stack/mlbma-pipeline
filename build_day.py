@@ -81,12 +81,15 @@ SP = {}
 for r in wb[[t for t in wb.sheetnames if t.startswith('PROBABLES')][0]].iter_rows(min_row=3, values_only=True):
     if not r[3]: continue
     g = lambda i: fnum(r[i - 1])
-    SP[norm(r[3])] = {'team': A(r[2]), 'name': r[3], 'IP': g(5), 'ERA': g(6), 'WHIP': g(7), 'xERA': g(8), 'SIERA': g(9), 'Stuff': g(14), 'K%': g(15), 'BB%': g(16),
+    _rec = {'team': A(r[2]), 'name': r[3], 'IP': g(5), 'ERA': g(6), 'WHIP': g(7), 'xERA': g(8), 'SIERA': g(9), 'Stuff': g(14), 'K%': g(15), 'BB%': g(16),
         'KBB': g(17), 'SwStr': g(18), 'CSW': g(19), 'Ball': g(20), 'FStrk': g(21), 'Chase': g(22), 'BAA': g(25), 'BABIP': g(26), 'GB': g(27), 'FB': g(29),
         'HRFB': g(32), 'HH': g(33), 'BRL': g(35), 'GS': g(38), 'K': g(39), 'BB': g(40),
         'L': {'TBF': g(45), 'xFIP': g(46), 'BAA': g(47), 'OPS': g(48), 'BABIP': g(49), 'WHIP': g(50), 'GB': g(53), 'FB': g(54), 'HRFB': g(56), 'HH': g(57)},
         'R': {'TBF': g(60), 'xFIP': g(61), 'BAA': g(62), 'OPS': g(63), 'BABIP': g(64), 'WHIP': g(65), 'GB': g(68), 'FB': g(69), 'HRFB': g(71), 'HH': g(72)},
         'K/GS': g(75), 'BB/GS': g(76), 'OUT/GS': g(77), 'L30_xERA': g(91), 'L30_SIERA': g(92), 'L30_KBB': g(93)}
+    SP[norm(r[3])] = _rec
+    _bare = norm(re.sub(r'\([^)]*\)', '', str(r[3])))   # 'Ethan Pecko (AAA)' -> 'ethan pecko'; AAA/AA call-ups carry the level in the workbook name
+    if _bare and _bare not in SP: SP[_bare] = _rec
 # bullpens
 PEN = {}
 for r in wb['Bullpens'].iter_rows(min_row=3, max_col=34, values_only=True):
@@ -269,7 +272,7 @@ for p in P.values():
     p['team_agg'] = not byteam[t]
 
 # ---------------- K / BB / ER models ----------------
-KP = [p for p in P.values() if p['sp'] and not p['opener']]
+KP = [p for p in P.values() if p['sp'] and not p['opener'] and p['sp'].get('K/GS') is not None and p['sp'].get('BB/GS') is not None and p['sp'].get('SIERA') is not None]
 def zk(key, src=lambda p: p['sp']): return dict(zip([p['id'] for p in KP], z([src(p).get(key) if src(p) else None for p in KP])))
 def market_line(p, mkt, fallback_key):
     q = player_quotes(gm[p['gp']]['eid'], mkt, p['name'])

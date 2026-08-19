@@ -1,5 +1,5 @@
 import json,re,unicodedata,time,urllib.request,urllib.parse,sys
-DATE='2026-08-18'
+DATE='2026-08-19'
 def get(u,tries=6):
     for i in range(tries):
         try:
@@ -22,12 +22,12 @@ for t in teams:
     roster[t]={norm(p['person']['fullName']):p['person']['id'] for p in r['roster']}
     time.sleep(0.3)
 # override BOS SP + workbook opener rule
-SP_OVERRIDE={  # gp -> list of (side, name, mlbam_id). LIST, not a tuple: 824075 needs BOTH sides.
- '823423':[('away','Tyler Phillips',663969)],   # MIA: Cade Gibson opens (market prices him ER 0.5 only); Phillips is the bulk arm
- '824075':[('away','Jack Perkins',678022),      # ATH: Brady Basso opens (ER 0.5 only); Perkins keeps K 3.5 + ER 2.5 = bulk
-           ('home','Daniel Lynch IV',663738)],  # KC: statsapi + workbook agree Lynch (ER 1.5); rotowire's Mason Black was WRONG
- '824639':[('away','Erick Fedde',607200)],      # CWS: Bryan Hudson opens (ER 0.5 only); Fedde bulk per workbook + rotowire
+SP_OVERRIDE_BY_MATCH={  # 'AWAY@HOME' -> list of (side, name, mlbam_id)
+ 'CWS@CHC':[('away','Jose Urquidy',664353)],   # OPENER: Sean Newcomb opens (props page K 2.0 / 6.10 outs, "short start"); workbook PROBABLES + ITT + rotowire all name Urquidy as the bulk arm
+ 'ATH@KC':[('away','Jeffrey Springs',605488),  # statsapi posted NO probables for this game; workbook PROBABLES + rotowire agree Springs
+           ('home','Seth Lugo',607625)],       # workbook + rotowire + props page agree Lugo
 }
+SP_OVERRIDE={}
 games=[];lineups={};sp_ids=set()
 def rw_block(g):
     # match by teams + time (DH)
@@ -50,8 +50,9 @@ weather={}
 for g in sched:
     gp=str(g['game_pk']); b=rw_block(g); w=wx_block(g)
     assert b and w, (g['away'],g['home'],g['time'])
-    if gp in SP_OVERRIDE:
-        for side,nm,pid in SP_OVERRIDE[gp]: g[side+'_sp']=nm; g[side+'_sp_id']=pid
+    mk=f"{g['away']}@{g['home']}"
+    if mk in SP_OVERRIDE_BY_MATCH:
+        for side,nm,pid in SP_OVERRIDE_BY_MATCH[mk]: g[side+'_sp']=nm; g[side+'_sp_id']=pid
     games.append(dict(game_pk=g['game_pk'],time=g['time'],away=g['away'],home=g['home'],venue=g['venue'],away_sp=g['away_sp'],away_sp_id=g['away_sp_id'],home_sp=g['home_sp'],home_sp_id=g['home_sp_id'],dh=g['dh'],gn=g['gn']))
     sp_ids.update([g['away_sp_id'],g['home_sp_id']])
     lineups[gp]={}
