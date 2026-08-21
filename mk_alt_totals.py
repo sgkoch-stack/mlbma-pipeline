@@ -1,5 +1,5 @@
 import json,os,time,urllib.request
-DATE='2026-08-19'
+DATE='2026-08-21'
 KEY=os.environ['ODDS_API_KEY']
 def team_abbr_import():
     import sys; sys.path.insert(0,'.')

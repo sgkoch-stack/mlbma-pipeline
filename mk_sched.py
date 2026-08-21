@@ -1,5 +1,5 @@
 import json,time,urllib.request,collections
-DATE='2026-08-19'
+DATE='2026-08-21'
 def get(u,tries=6):
     for i in range(tries):
         try:

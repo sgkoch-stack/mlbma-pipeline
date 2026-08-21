@@ -176,6 +176,16 @@ for g in games:
               'park_pp': TB_PARK_PP.get(venue, 0.0), 'park_tt': TT_PARK[g['home']], 'eid': event_for(g['away'], g['home'], g.get('gn') if g.get('dh') in ('S','Y') else None)}
 
 # ---------------- pitcher table (per starter, incl. opener protocol) ----------------
+def sp_lookup(nm):
+    """Workbook PROBABLES name vs statsapi/market name: exact norm first, then unique last-name
+    match with a shared first initial ('Cam Schlittler' <-> 'Cameron Schlittler'). Silent miss here
+    would mark a real starter an opener and score the opposing lineup vs the pen composite."""
+    k = norm(nm)
+    if k in SP: return SP[k]
+    ln = k.split()[-1]; fi = k[0]
+    c = [v for kk, v in SP.items() if kk.split()[-1] == ln and kk[0] == fi]
+    return c[0] if len(c) == 1 else None
+
 OPENERS = {'Lake Bachar'}  # PIT listed BULLPEN in workbook; Bachar 8.5-out profile
 P = {}
 for g in games:
@@ -183,7 +193,7 @@ for g in games:
     for side in ('away', 'home'):
         nm = g[side + '_sp']; pid = g[side + '_sp_id']; team = g[side + '_k']; opp = g[('home' if side == 'away' else 'away') + '_k']
         hand = sp_hands[pid][1]
-        sp = SP.get(norm(nm))
+        sp = sp_lookup(nm)
         pp = props_page.get(norm(nm), {})
         # outgs_adj = props-page OUTS proj (interp 1); fallback shrunk OUT/GS later
         P[pid] = {'id': pid, 'name': nm, 'team': team, 'opp': opp, 'hand': hand, 'gp': gp, 'side': side, 'sp': sp, 'pp': pp,

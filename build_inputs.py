@@ -1,5 +1,5 @@
 import json,re,unicodedata,time,urllib.request,urllib.parse,sys
-DATE='2026-08-19'
+DATE='2026-08-21'
 def get(u,tries=6):
     for i in range(tries):
         try:
@@ -23,9 +23,9 @@ for t in teams:
     time.sleep(0.3)
 # override BOS SP + workbook opener rule
 SP_OVERRIDE_BY_MATCH={  # 'AWAY@HOME' -> list of (side, name, mlbam_id)
- 'CWS@CHC':[('away','Jose Urquidy',664353)],   # OPENER: Sean Newcomb opens (props page K 2.0 / 6.10 outs, "short start"); workbook PROBABLES + ITT + rotowire all name Urquidy as the bulk arm
- 'ATH@KC':[('away','Jeffrey Springs',605488),  # statsapi posted NO probables for this game; workbook PROBABLES + rotowire agree Springs
-           ('home','Seth Lugo',607625)],       # workbook + rotowire + props page agree Lugo
+ 'TOR@NYY':[('away','Spencer Arrighetti',681293)],  # OPENER: Mason Fluharty opens (props page line 0 K / proj 1.2, "Short start"); workbook PROBABLES + rotowire agree Arrighetti is the bulk arm
+ 'STL@PHI':[('away','Hunter Dobbins',690928)],      # statsapi posted NO probable; workbook PROBABLES + rotowire agree Dobbins (R); Model A says TBD (R) - hand matches
+ 'MIN@SD':[('home','Randy Vasquez',681190)],        # statsapi silent; workbook + rotowire say Musgrove but the PROP MARKET has Vasquez K/BB/ER lines and Model A + props page name Vasquez - market tiebreaker wins
 }
 SP_OVERRIDE={}
 games=[];lineups={};sp_ids=set()
