@@ -179,12 +179,22 @@ for g in games:
 def sp_lookup(nm):
     """Workbook PROBABLES name vs statsapi/market name: exact norm first, then unique last-name
     match with a shared first initial ('Cam Schlittler' <-> 'Cameron Schlittler'). Silent miss here
-    would mark a real starter an opener and score the opposing lineup vs the pen composite."""
+    would mark a real starter an opener and score the opposing lineup vs the pen composite.
+    NO-MLB-DATA GUARD (8/22): a workbook row carrying MINOR-LEAGUE stats (name tagged '(AA)'/'(AAA)'
+    or xERA/SIERA blank) is NOT a modelable starter -- Kade Anderson's AA line (1.06 ERA, no xERA)
+    crashed the TT skill z and would otherwise have priced CHC bats against a phantom ace. Returns
+    None so the game is scored as a bullpen game vs the pen composite (CIN-G1 precedent, 8/17)."""
     k = norm(nm)
-    if k in SP: return SP[k]
-    ln = k.split()[-1]; fi = k[0]
-    c = [v for kk, v in SP.items() if kk.split()[-1] == ln and kk[0] == fi]
-    return c[0] if len(c) == 1 else None
+    rec = SP.get(k)
+    if rec is None:
+        ln = k.split()[-1]; fi = k[0]
+        c = [v for kk, v in SP.items() if kk.split()[-1] == ln and kk[0] == fi]
+        rec = c[0] if len(c) == 1 else None
+    if rec is not None:
+        if re.search(r'\((?:A|AA|AAA|R|ROK)\)', str(rec.get('name', ''))) or rec.get('xERA') is None or rec.get('SIERA') is None:
+            print(f'NO-MLB-DATA SP: {nm} (workbook row "{rec.get("name")}") -> unmodeled, pen composite')
+            return None
+    return rec
 
 OPENERS = {'Lake Bachar'}  # PIT listed BULLPEN in workbook; Bachar 8.5-out profile
 P = {}
