@@ -1,5 +1,5 @@
 import json,re,unicodedata,time,urllib.request,urllib.parse,sys
-DATE='2026-08-21'
+DATE='2026-08-22'
 def get(u,tries=6):
     for i in range(tries):
         try:
@@ -23,9 +23,7 @@ for t in teams:
     time.sleep(0.3)
 # override BOS SP + workbook opener rule
 SP_OVERRIDE_BY_MATCH={  # 'AWAY@HOME' -> list of (side, name, mlbam_id)
- 'TOR@NYY':[('away','Spencer Arrighetti',681293)],  # OPENER: Mason Fluharty opens (props page line 0 K / proj 1.2, "Short start"); workbook PROBABLES + rotowire agree Arrighetti is the bulk arm
- 'STL@PHI':[('away','Hunter Dobbins',690928)],      # statsapi posted NO probable; workbook PROBABLES + rotowire agree Dobbins (R); Model A says TBD (R) - hand matches
- 'MIN@SD':[('home','Randy Vasquez',681190)],        # statsapi silent; workbook + rotowire say Musgrove but the PROP MARKET has Vasquez K/BB/ER lines and Model A + props page name Vasquez - market tiebreaker wins
+ 'STL@PHI':[('away','Quinn Mathews',687273)],  # statsapi posted NO probable; workbook PROBABLES + rotowire + Model A + props page all say Quinn Mathews (L)
 }
 SP_OVERRIDE={}
 games=[];lineups={};sp_ids=set()
